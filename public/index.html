@@ -420,10 +420,8 @@ body.staff-mode .staff-only-label{display:inline-flex;align-items:center}
 @media(max-width:600px){#homeGrid{grid-template-columns:1fr}.clean-food{grid-template-columns:96px 1fr}.clean-food .foodPic{width:96px;height:96px}.clean-food .food-side{grid-column:2}.clean-food .food-main{grid-column:2}.clean-food .foodPic{grid-row:1 / span 2}.clean-ai{padding:14px}.clean-ai-head{align-items:flex-start}}
 
 .auth-tabs{display:flex;gap:4px;margin:18px 0 20px;padding:4px;background:var(--soft,#f5f5f2);border-radius:12px}.auth-tab{flex:1;border:0;background:transparent;padding:10px;border-radius:9px;font-weight:800;cursor:pointer}.auth-tab.active{background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.08)}.auth-pane.hidden{display:none !important}.auth-tabs button{color:inherit}.role-field .muted{font-weight:600;font-size:9px;text-transform:none}
-<style id="campusbite-menu-polish">
 .clean-food .foodPic img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;margin:0;padding:0}
 .clean-food .price{font-size:18px;font-weight:900}
-</style>
 </style>
 </head>
 <body>
@@ -577,7 +575,7 @@ body.staff-mode .staff-only-label{display:inline-flex;align-items:center}
  <div class="section"><h2>Campus Wallet</h2><span class="muted">Fast, cashless campus payments</span></div>
  <div class="walletHero">
    <div class="walletTop"><span class="walletLabel">AVAILABLE BALANCE</span><span>● ACTIVE</span></div>
-   <div class="walletBalance">₹<span id="walletBalance">1,250</span></div>
+   <div class="walletBalance">₹<span id="walletBalance">0</span></div>
    <div class="walletId">Campus Wallet •••• 2047</div>
    <div class="walletActions"><button id="addMoney">＋ Add money</button><button id="walletHistory">Transaction history</button></div>
  </div>
@@ -760,7 +758,7 @@ const MENU=[
 {id:303,shop:"Campus Café",name:"Veg Hakka Noodles",price:90,emoji:"🍜",cat:"Meals",desc:"Wok-tossed noodles with vegetables",ingredients:"Wheat noodles, cabbage, carrot, capsicum, spring onion, soy sauce, spices",pop:92,stock:15,img:"https://images.pexels.com/photos/2347311/pexels-photo-2347311.jpeg?auto=compress&cs=tinysrgb&w=900",available:true,diet:["Vegetarian", "Contains gluten", "Spicy"]},
 {id:304,shop:"Campus Café",name:"Chocolate Muffin",price:55,emoji:"🧁",cat:"Bakery",desc:"Soft chocolate chip muffin",ingredients:"Wheat flour, cocoa, sugar, milk, butter, chocolate chips, baking powder",pop:91,stock:17,img:"https://images.pexels.com/photos/205961/pexels-photo-205961.jpeg?auto=compress&cs=tinysrgb&w=900",available:true,diet:["Vegetarian", "Contains gluten", "Contains dairy"]}
 ];
-let cart={},orders=[],offer=false,category="All",seq=100,wallet=1250;
+let cart={},orders=[],offer=false,category="All",seq=100,wallet=0;
 function syncFirstOrderOffer(){
   const section=$("offerSection"), button=$("applyOffer");
   const eligible=orders.length===0;
@@ -781,10 +779,7 @@ async function refreshCanteenWait(){
   }catch{}
 }
 const SHOP_PREP_BASE={"Hari Sandwich":6,"Reo Store":4,"Campus Café":8};
-let transactions=[
- {icon:"🎁",title:"Welcome cashback",sub:"CampusBite reward",amt:75,type:"credit"},
- {icon:"💳",title:"Wallet loaded",sub:"Demo opening balance",amt:1250,type:"credit"}
-];
+let transactions=[];
 const $=id=>document.getElementById(id);
 
 function toast(t){$("toast").textContent=t;$("toast").classList.add("show");clearTimeout(window.tt);window.tt=setTimeout(()=>$("toast").classList.remove("show"),1700)}
@@ -1515,12 +1510,12 @@ window.addEventListener("load",()=>{
     }catch(e){toast(e.message||'Could not sync staff console');}
   }
   function startPolling(){clearInterval(pollTimer);pollTimer=setInterval(()=>{const u=user();if(!u)return;if(u.role==='customer'){loadCustomerState(true);loadMenu();}if(u.role==='staff')loadStaff();},3000);}
-  function wire(){
+  async function wire(){
     const sl=$('continueCustomer'),sf=$('continueStaff'),cs=$('signupCustomer'),ss=$('signupStaff');if(sl)sl.onclick=customerLogin;if(sf)sf.onclick=staffLogin;if(cs)cs.onclick=customerSignup;if(ss)ss.onclick=staffSignup;
     const cf=$('confirm');if(cf)cf.onclick=placeOrder;const cm=$('confirmMoney');if(cm)cm.onclick=topup;
     const ap=$('autoPayBtn');if(ap)ap.onclick=saveAutopay;
     const lg=$('logoutBtn');if(lg)lg.onclick=clearSession;
-    const saved=user();if(saved&&token()){if(saved.role==='customer'){loadCustomerState();loadMenu();view('home');}else if(saved.role==='staff'){view('staff');loadStaff();}startPolling();}else if(typeof window.campusBiteShowGate==="function")window.campusBiteShowGate();
+    const saved=user();if(saved&&token()){if(saved.role==='customer'){await loadCustomerState();await loadMenu();view('home');}else if(saved.role==='staff'){view('staff');await loadStaff();}startPolling();}else if(typeof window.campusBiteShowGate==="function")window.campusBiteShowGate();
   }
   window.campusBiteApi={api,loadCustomerState,loadStaff,loadMenu};
   window.campusBiteLogout=clearSession;
@@ -1530,4 +1525,3 @@ window.addEventListener("load",()=>{
 </script>
 </body>
 </html>
-startCanteenWaitRefresh();
