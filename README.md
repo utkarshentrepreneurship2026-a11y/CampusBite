@@ -53,7 +53,7 @@ Checkout supports ASAP or scheduled pickup from 3:00 PM through 9:00 PM in 30-mi
 
 ## Smart menu labels
 
-Menu cards show indicative tags such as Vegetarian, Non-veg, Contains gluten, Contains dairy, Spicy, Gluten-free, Popular, Low stock, and Best value.
+The customer home menu uses a compact AI ranking label on the top three ranked items: AI Pick 1, AI Pick 2, and AI Pick 3. Each food card also shows up to two dietary tags and its ingredients directly; no recommendation-score jargon is shown on ordinary menu cards.
 
 
 ## Database initialization
