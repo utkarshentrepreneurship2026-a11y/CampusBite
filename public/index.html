@@ -1050,7 +1050,9 @@ render();
     const root=role==='customer'?customerForm:staffForm; if(!root)return;
     root.querySelectorAll('[data-auth-mode]').forEach(b=>b.classList.toggle('active',b.dataset.authMode===mode));
     const si=document.getElementById(role+'Signin'), su=document.getElementById(role+'Signup');
-    if(si)si.classList.toggle('hidden',mode!=='signin'); if(su)su.classList.toggle('hidden',mode!=='signup');
+    // Use both class and inline display so the inactive form is guaranteed hidden.
+    if(si){si.classList.toggle('hidden',mode!=='signin');si.style.display=mode==='signin'?'block':'none';}
+    if(su){su.classList.toggle('hidden',mode!=='signup');su.style.display=mode==='signup'?'block':'none';}
   }
   document.querySelectorAll('[data-auth-role][data-auth-mode]').forEach(b=>b.onclick=()=>setAuthMode(b.dataset.authRole,b.dataset.authMode));
   window.campusBiteUpdateIdentity=updateUserIdentity;
