@@ -57,9 +57,11 @@ Menu cards show indicative tags such as Vegetarian, Non-veg, Contains gluten, Co
 
 
 ## Database initialization
-On startup, the server automatically applies `schema.sql` and removes any legacy demo accounts before running
-and menu seeding. This allows a fresh PostgreSQL database (including a new Render or
-Supabase database) to start without manually creating `menu_items` first.
+On startup, the server applies `schema.sql` and seeds/updates the menu as needed. A one-time migration
+removes only the two legacy customer demo IDs (`CB2026001` and `CB2026002`) from an existing database,
+then records that migration as complete. Registered customer and staff accounts are never deleted by
+server startup, restart, or redeploy. This also allows a fresh PostgreSQL database (including a new Render
+or Supabase database) to start without manually creating `menu_items` first.
 
 
 Account persistence: registered customer and staff accounts are stored in PostgreSQL. The two legacy customer demo IDs (CB2026001 and CB2026002) are removed once by a migration marker; no recurring startup account cleanup is performed. Customer state is loaded by account ID after sign-in, including wallet, wallet transactions, and order history.
