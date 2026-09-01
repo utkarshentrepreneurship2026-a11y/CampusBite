@@ -107,14 +107,14 @@ app.post('/api/auth/staff',async(req,res)=>{
     if(!r || !(await bcrypt.compare(String(pin||''),r.pin_hash))) return res.status(401).json({error:'Invalid staff ID or PIN'});
     if(shop && r.shop!==shop)return res.status(401).json({error:'Staff account does not belong to this shop'});
     const token=tokenFor({role:'staff',id:r.id,shop:r.shop});
-    res.json({token,user:{role:'staff',name:r.name,shop:r.shop,staffCode:r.staff_code,accountType:r.account_type||'Teacher'}});
+    res.json({token,user:{role:'staff',name:r.name,shop:r.shop,staffCode:r.staff_code}});
   }catch(e){console.error(e);res.status(500).json({error:'Staff login unavailable'});}
 });
 app.post('/api/auth/staff/signup',async(req,res)=>{
   try{
-    const {name,shop,pin,staffCode,accountType}=req.body;
+    const {name,shop,pin,staffCode}=req.body;
     const n=String(name||'').trim(), code=String(staffCode||'').trim(), p=String(pin||'');
-    const type=['Student','Teacher'].includes(accountType)?accountType:'Teacher';
+    const type='Staff';
     if(n.length<2)return res.status(400).json({error:'Enter your full name'});
     if(!shops.includes(shop))return res.status(400).json({error:'Select a valid shop'});
     if(!/^[A-Za-z0-9_-]{4,20}$/.test(code))return res.status(400).json({error:'Staff ID must be 4–20 characters'});
@@ -124,7 +124,7 @@ app.post('/api/auth/staff/signup',async(req,res)=>{
     const hash=await bcrypt.hash(p,10);
     const r=(await (await db()).query(`INSERT INTO staff_users(name,shop,staff_code,account_type,pin_hash) VALUES($1,$2,$3,$4,$5) RETURNING id,name,shop,staff_code,account_type`,[n,shop,code,type,hash])).rows[0];
     const token=tokenFor({role:'staff',id:r.id,shop:r.shop});
-    res.status(201).json({token,user:{role:'staff',name:r.name,shop:r.shop,staffCode:r.staff_code,accountType:r.account_type}});
+    res.status(201).json({token,user:{role:'staff',name:r.name,shop:r.shop,staffCode:r.staff_code}});
   }catch(e){console.error(e);res.status(500).json({error:'Staff sign up unavailable'});}
 });
 
@@ -216,9 +216,27 @@ app.get('/api/canteen/status',async(req,res)=>{
     const avgPrep=history.length ? history.reduce((a,b)=>a+b,0)/history.length : fallback;
     const activeCount=activeRows.length;
     const preparingCount=activeRows.filter(r=>Number(r.status)===1).length;
-    // Estimate the queue from real active orders and this shop's recent preparation speed.
-    // Keep the public display compact (e.g. 6 min), matching the existing UI.
-    const wait=Math.max(2,Math.min(45,Math.ceil(avgPrep*Math.max(1,activeCount))));
+
+    // Estimate this shop's current wait from its own live queue.
+    // No active orders means there is effectively no queue; otherwise each
+    // order contributes an estimated amount of remaining preparation time.
+    let estimatedMinutes=0;
+    if(activeCount>0){
+      const now=Date.now();
+      for(const order of activeRows){
+        const status=Number(order.status);
+        if(status===0){
+          estimatedMinutes += avgPrep;
+        }else if(status===1){
+          const started=order.prep_started_at ? new Date(order.prep_started_at).getTime() : now;
+          const elapsed=Math.max(0,(now-started)/60000);
+          estimatedMinutes += Math.max(1,avgPrep-elapsed);
+        }else if(status===2){
+          estimatedMinutes += 1;
+        }
+      }
+    }
+    const wait=activeCount===0 ? 2 : Math.max(2,Math.min(45,Math.ceil(estimatedMinutes)));
     res.json({shop,waitMinutes:wait,activeOrders:activeCount,preparingOrders:preparingCount,sampleSize:history.length});
   }catch(e){console.error(e);res.status(500).json({error:'Canteen status unavailable'});}
 });

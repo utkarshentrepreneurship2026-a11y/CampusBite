@@ -406,14 +406,14 @@ body.staff-mode .staff-only-label{display:inline-flex;align-items:center}
 /* Clean customer menu: spacious, information hierarchy, minimal clutter. */
 #menuGrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
 #homeGrid{grid-template-columns:repeat(3,1fr);gap:12px}
-.clean-food{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px;display:grid;grid-template-columns:150px 1fr auto;gap:15px;align-items:center;box-shadow:0 4px 16px rgba(30,34,24,.035)}
-.clean-food .foodPic{height:128px;width:150px;border-radius:14px;margin:0}
+.clean-food{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;grid-template-columns:220px 1fr auto;gap:18px;align-items:center;box-shadow:0 4px 16px rgba(30,34,24,.035)}
+.clean-food .foodPic{height:165px;width:220px;border-radius:14px;margin:0}
 .clean-food h3{margin:0 0 4px;font-size:16px;letter-spacing:-.2px}.clean-food .muted{line-height:1.45}
 .clean-food .foodSmart{margin-top:8px}.clean-food .foodFoot{margin-top:9px}
-.clean-food .food-main{min-width:0}.clean-food .food-side{text-align:right;min-width:90px}.clean-food .price{font-size:18px}.clean-food .stock{font-size:10px;color:var(--green);font-weight:800;margin:4px 0 9px}
-.ingredients-toggle{border:0;background:transparent;padding:7px 0 0;color:#3f654d;font-size:11px;font-weight:850;display:inline-flex;align-items:center;gap:5px}.ingredients-toggle .chev{font-size:10px;transition:.2s}.ingredients-panel{display:none;margin-top:6px;padding:8px 10px;border-radius:10px;background:#f4f7f3;border:1px solid #e0e9e1;color:#626a63;font-size:10.5px;line-height:1.45}.ingredients-panel.open{display:block}.ingredients-panel b{color:#3f654d}.clean-food .diet-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
-#homeGrid .clean-food{display:block;padding:11px}.#homeGrid .foodPic{width:100%;height:150px;margin-bottom:10px}.#homeGrid .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}.#homeGrid .foodFoot{margin-top:8px}
-#homeGrid .clean-food{display:block}.#homeGrid .clean-food .foodPic{width:100%;height:150px}.#homeGrid .clean-food .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}.#homeGrid .clean-food .ingredients-toggle{display:none}
+.clean-food .food-main{min-width:0}.clean-food .food-side{text-align:right;min-width:90px}.clean-food .price{font-size:22px}.clean-food .stock{display:none}
+.ingredients-toggle{display:none}.ingredients-panel{display:none}.clean-food .ingredients{display:block;margin-top:10px;line-height:1.5;font-size:12px;color:#4f5b53}.clean-food .ingredients b{color:#2f5f49}.clean-food .diet-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+#homeGrid .clean-food{display:block;padding:14px}.#homeGrid .foodPic{width:100%;height:190px;margin-bottom:12px}.#homeGrid .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}.#homeGrid .foodFoot{margin-top:8px}
+#homeGrid .clean-food{display:block}.#homeGrid .clean-food .foodPic{width:100%;height:190px}.#homeGrid .clean-food .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}
 .clean-ai{margin-top:16px;background:linear-gradient(135deg,#f1f7f1,#fffdf8);border:1px solid #d8e5d9;border-radius:18px;padding:17px 18px}.clean-ai-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.clean-ai-title{font-size:15px;font-weight:900}.clean-ai p{margin:5px 0 0;color:#69716a;font-size:11px;line-height:1.5}.clean-ai-badge{font-size:9px;font-weight:900;color:var(--green);background:#e2eee4;border-radius:999px;padding:6px 9px;white-space:nowrap}
 .menu-toolbar{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:11px}.menu-toolbar .searchbar{margin:0}.menu-toolbar .chips{margin:10px 0 0}
 @media(max-width:850px){#homeGrid{grid-template-columns:repeat(2,1fr)}.clean-food{grid-template-columns:115px 1fr;gap:12px}.clean-food .foodPic{width:115px;height:115px}.clean-food .food-side{grid-column:2;text-align:left;display:flex;align-items:center;justify-content:space-between}.clean-food .food-main{grid-column:2}.clean-food .foodPic{grid-row:1 / span 2}.clean-food .food-side{grid-row:2}}
@@ -493,7 +493,6 @@ body.staff-mode .staff-only-label{display:inline-flex;align-items:center}
         <p>Set up your canteen staff access.</p>
         <div class="role-grid">
           <div class="role-field"><label>NAME</label><input id="staffSignupName" placeholder="Your full name"></div>
-          <div class="role-field"><label>STUDENT OR TEACHER</label><select id="staffSignupType"><option>Teacher</option><option>Student</option></select></div>
           <div class="role-field"><label>SHOP</label><select id="staffSignupShop"><option value="Hari Sandwich">🥪 Hari Sandwich</option><option value="Reo Store">🏪 Reo Store</option><option value="Campus Café">☕ Campus Café</option></select></div>
           <div class="role-field"><label>STAFF ID</label><input id="staffSignupCode" placeholder="Create an ID"></div>
           <div class="role-field"><label>PIN</label><input id="staffSignupPin" type="password" inputmode="numeric" maxlength="6" placeholder="4–6 digits"></div>
@@ -853,33 +852,22 @@ function getMLRecommendations(shopItems){
     return {...x,mlScore:score,mlInteractions:interactions};
   }).sort((a,b)=>b.mlScore-a.mlScore||Number(b.pop||0)-Number(a.pop||0));
 }
-function smartReason(x, modelItems){
-  if(x.mlInteractions>0) return x.mlInteractions>=4?'Based on your previous orders':'Based on what you have added before';
-  const avg=modelItems.reduce((a,b)=>a+Number(b.price||0),0)/Math.max(1,modelItems.length);
-  if(Number(x.price)<=avg*0.85) return 'Fits your value pattern';
-  if(Number(x.pop)>=95) return 'Popular across campus';
-  return 'Matches current menu signals';
-}
-function foodCard(x, smartRank, smartReasonText){
-  const q=cart[x.id]||0,tags=[];
-  (x.diet||[]).forEach(t=>{const cls=t.includes('Spicy')?'hot':'';tags.push(`<span class="smartTag ${cls}">${t}</span>`);});
-  if(smartRank!=null && smartRank<=3)tags.push(`<span class="smartTag hot">✨ AI pick #${smartRank}</span>`);
-  if(smartRank!=null && smartRank<=3 && smartReasonText)tags.push(`<span class="smartTag">${smartReasonText}</span>`);
-  if(x.pop>=95)tags.push('<span class="smartTag hot">🔥 Popular</span>');
-  if(x.stock<=10)tags.push('<span class="smartTag low">⚠ Low stock</span>');
-  if(x.price<=60)tags.push('<span class="smartTag">Good value</span>');
-  const stockText=Number(x.stock)>0?`${Number(x.stock)} available`:'Currently unavailable';
+function foodCard(x, aiRank=null){
+  const q=cart[x.id]||0;
+  const tags=(x.diet||[]).slice(0,2).map(t=>{
+    const cls=t.includes('Spicy')?'hot':'';
+    return `<span class="smartTag ${cls}">${t}</span>`;
+  }).join('');
+  if(aiRank!=null){ tags += `<span class="smartTag ai-pick">AI Pick ${aiRank}</span>`; }
   return `<article class="food clean-food">
     <div class="foodPic"><img src="${x.img}" alt="${x.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.opacity='1'"><span class="photoFallback">${x.emoji}</span></div>
-    <div class="food-main"><h3>${x.name}</h3><div class="muted">${x.desc}</div><div class="diet-tags">${tags.join('')}</div>
-      <button class="ingredients-toggle" type="button" data-ingredients="${x.id}">🥗 Ingredients <span class="chev">⌄</span></button>
-      <div class="ingredients-panel" id="ingredients-${x.id}"><b>Ingredients:</b> ${x.ingredients||'Ingredients not listed'}</div>
+    <div class="food-main"><h3>${x.name}</h3><div class="muted">${x.desc}</div><div class="diet-tags">${tags}</div>
+      <div class="ingredients"><b>Ingredients:</b> ${x.ingredients||'Ingredients not listed'}</div>
     </div>
-    <div class="food-side"><div><div class="price">₹${x.price}</div><div class="stock">● ${stockText}</div></div>${q?`<div class="qty"><button data-id="${x.id}" data-d="-1">−</button><b>${q}</b><button data-id="${x.id}" data-d="1">+</button></div>`:`<button class="add" data-id="${x.id}" data-d="1">+ Add</button>`}</div>
+    <div class="food-side"><div class="price">₹${x.price}</div>${q?`<div class="qty"><button data-id="${x.id}" data-d="-1">−</button><b>${q}</b><button data-id="${x.id}" data-d="1">+</button></div>`:`<button class="add" data-id="${x.id}" data-d="1">+ Add</button>`}</div>
   </article>`;
 }
 
-document.addEventListener("click",e=>{const t=e.target.closest("[data-ingredients]");if(t){const panel=$("ingredients-"+t.dataset.ingredients);if(panel){panel.classList.toggle("open");const c=t.querySelector(".chev");if(c)c.textContent=panel.classList.contains("open")?"⌃":"⌄";}}});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-id]");if(b){const id=+b.dataset.id,d=+b.dataset.d,x=MENU.find(m=>m.id===id);if(!x)return;const next=Math.max(0,(cart[id]||0)+d);if(d>0&&x.stock!=null&&next>Number(x.stock)){toast("Only "+Number(x.stock)+" left in stock");return;}if(next===0)delete cart[id];else cart[id]=next;if(d>0)recordML(id,'add');render();if(d>0)toast("Added to cart")}});
 
 function totals(){let sub=0,n=0;Object.entries(cart).forEach(([id,q])=>{const x=MENU.find(m=>m.id==id);sub+=x.price*q;n+=q});const discount=offer&&sub>=100?Math.round(sub*.10):0;const fee=n?3:0;return{n,sub,discount,fee,total:sub-discount+fee}}
@@ -887,7 +875,7 @@ function renderHome(){
   const shop=Object.values(SHOP_MAP).includes(selectedShop)?selectedShop:"Reo Store";
   const shopItems=MENU.filter(x=>x.shop===shop&&x.available);
   const ranked=getMLRecommendations(shopItems).slice(0,6);
-  $("homeGrid").innerHTML=ranked.map((x,i)=>foodCard(x,i+1,smartReason(x,ranked))).join("");
+  $("homeGrid").innerHTML=ranked.map(x=>foodCard(x)).join("");
   refreshCanteenWait();
 }
 let canteenWaitTimer=null;
@@ -906,7 +894,7 @@ function renderMenu(){
  if(category!=="All"&&!cats.includes(category))category="All";
  if(category!=="All")a=a.filter(x=>x.cat===category);
  $("chips").innerHTML=cats.map(c=>`<button class="chip ${c===category?"active":""}" data-cat="${c}">${c}</button>`).join("");
- $("menuGrid").innerHTML=a.length?a.map(foodCard).join(""):`<div class="empty">No items available at this shop.</div>`;
+ $("menuGrid").innerHTML=a.length?a.map(x=>foodCard(x)).join(""):`<div class="empty">No items available at this shop.</div>`;
  document.querySelectorAll("[data-cat]").forEach(btn=>btn.onclick=()=>{category=btn.dataset.cat;renderMenu()});
  const label=$("selectedShopMenu"); if(label)label.textContent=shop;
  document.querySelectorAll("#shopMenuFilter [data-shop]").forEach(btn=>btn.classList.toggle("active",btn.dataset.shop===shop));
@@ -1454,12 +1442,12 @@ window.addEventListener("load",()=>{
   }
   async function customerSignup(){
     const name=$('customerSignupName').value.trim(),type=$('customerSignupType').value,code=$('customerSignupCode').value.trim(),pw=$('customerSignupPassword').value,err=$('customerSignupError');
-    try{const d=await api('/api/auth/customer/signup',{method:'POST',body:JSON.stringify({name,accountType:type,customerCode:code,password:pw})});localStorage.setItem(TOKEN_KEY,d.token);setSession(d.user);await loadCustomerState();await loadMenu();view('home');toast('Account created — welcome to CampusBite 👋');startPolling();}
+    try{await api('/api/auth/customer/signup',{method:'POST',body:JSON.stringify({name,accountType:type,customerCode:code,password:pw})});setAuthMode('customer','signin');const id=$('customerLoginCode');if(id)id.value=code;const pass=$('customerLoginPassword');if(pass)pass.value='';toast('Account created. Please sign in to continue.');}
     catch(e){if(err){err.textContent=e.message||'Could not create account';err.style.display='block';}else toast(e.message||'Sign up failed');}
   }
   async function staffSignup(){
-    const name=$('staffSignupName').value.trim(),type=$('staffSignupType').value,shop=$('staffSignupShop').value,code=$('staffSignupCode').value.trim(),pin=$('staffSignupPin').value,err=$('staffSignupError');
-    try{const d=await api('/api/auth/staff/signup',{method:'POST',body:JSON.stringify({name,accountType:type,shop,staffCode:code,pin})});localStorage.setItem(TOKEN_KEY,d.token);setSession(d.user);view('staff');await loadStaff();toast('Staff account created 👋');startPolling();}
+    const name=$('staffSignupName').value.trim(),shop=$('staffSignupShop').value,code=$('staffSignupCode').value.trim(),pin=$('staffSignupPin').value,err=$('staffSignupError');
+    try{await api('/api/auth/staff/signup',{method:'POST',body:JSON.stringify({name,shop,staffCode:code,pin})});setAuthMode('staff','signin');const id=$('staffLoginCode');if(id)id.value=code;const pinEl=$('staffLoginPin');if(pinEl)pinEl.value='';toast('Account created. Please sign in to continue.');}
     catch(e){if(err){err.textContent=e.message||'Could not create account';err.style.display='block';}else toast(e.message||'Sign up failed');}
   }
   async function placeOrder(){
