@@ -407,19 +407,23 @@ body.staff-mode .staff-only-label{display:inline-flex;align-items:center}
 #menuGrid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
 #homeGrid{grid-template-columns:repeat(3,1fr);gap:12px}
 .clean-food{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px;display:grid;grid-template-columns:220px 1fr auto;gap:18px;align-items:center;box-shadow:0 4px 16px rgba(30,34,24,.035)}
-.clean-food .foodPic{height:165px;width:220px;border-radius:14px;margin:0}
+.clean-food .foodPic{height:165px;width:220px;border-radius:14px;margin:0;padding:0;background:#ebe5d7;overflow:hidden}
 .clean-food h3{margin:0 0 4px;font-size:16px;letter-spacing:-.2px}.clean-food .muted{line-height:1.45}
 .clean-food .foodSmart{margin-top:8px}.clean-food .foodFoot{margin-top:9px}
-.clean-food .food-main{min-width:0}.clean-food .food-side{text-align:right;min-width:90px}.clean-food .price{font-size:22px}.clean-food .stock{display:none}
+.clean-food .food-main{min-width:0}.clean-food .food-side{text-align:right;min-width:90px}.clean-food .price{font-size:18px;font-weight:900;line-height:1.2}.clean-food .stock{display:none}
 .ingredients-toggle{display:none}.ingredients-panel{display:none}.clean-food .ingredients{display:block;margin-top:10px;line-height:1.5;font-size:12px;color:#4f5b53}.clean-food .ingredients b{color:#2f5f49}.clean-food .diet-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
 #homeGrid .clean-food{display:block;padding:14px}.#homeGrid .foodPic{width:100%;height:190px;margin-bottom:12px}.#homeGrid .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}.#homeGrid .foodFoot{margin-top:8px}
-#homeGrid .clean-food{display:block}.#homeGrid .clean-food .foodPic{width:100%;height:190px}.#homeGrid .clean-food .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}
+#homeGrid .clean-food{display:block}.#homeGrid .clean-food .foodPic{width:100%;height:190px;padding:0}.#homeGrid .clean-food .food-side{display:flex;align-items:center;justify-content:space-between;text-align:left}
 .clean-ai{margin-top:16px;background:linear-gradient(135deg,#f1f7f1,#fffdf8);border:1px solid #d8e5d9;border-radius:18px;padding:17px 18px}.clean-ai-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.clean-ai-title{font-size:15px;font-weight:900}.clean-ai p{margin:5px 0 0;color:#69716a;font-size:11px;line-height:1.5}.clean-ai-badge{font-size:9px;font-weight:900;color:var(--green);background:#e2eee4;border-radius:999px;padding:6px 9px;white-space:nowrap}
 .menu-toolbar{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:11px}.menu-toolbar .searchbar{margin:0}.menu-toolbar .chips{margin:10px 0 0}
 @media(max-width:850px){#homeGrid{grid-template-columns:repeat(2,1fr)}.clean-food{grid-template-columns:115px 1fr;gap:12px}.clean-food .foodPic{width:115px;height:115px}.clean-food .food-side{grid-column:2;text-align:left;display:flex;align-items:center;justify-content:space-between}.clean-food .food-main{grid-column:2}.clean-food .foodPic{grid-row:1 / span 2}.clean-food .food-side{grid-row:2}}
 @media(max-width:600px){#homeGrid{grid-template-columns:1fr}.clean-food{grid-template-columns:96px 1fr}.clean-food .foodPic{width:96px;height:96px}.clean-food .food-side{grid-column:2}.clean-food .food-main{grid-column:2}.clean-food .foodPic{grid-row:1 / span 2}.clean-ai{padding:14px}.clean-ai-head{align-items:flex-start}}
 
 .auth-tabs{display:flex;gap:4px;margin:18px 0 20px;padding:4px;background:var(--soft,#f5f5f2);border-radius:12px}.auth-tab{flex:1;border:0;background:transparent;padding:10px;border-radius:9px;font-weight:800;cursor:pointer}.auth-tab.active{background:#fff;box-shadow:0 1px 5px rgba(0,0,0,.08)}.auth-pane.hidden{display:none !important}.auth-tabs button{color:inherit}.role-field .muted{font-weight:600;font-size:9px;text-transform:none}
+<style id="campusbite-menu-polish">
+.clean-food .foodPic img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;margin:0;padding:0}
+.clean-food .price{font-size:18px;font-weight:900}
+</style>
 </style>
 </head>
 <body>
@@ -875,7 +879,7 @@ function renderHome(){
   const shop=Object.values(SHOP_MAP).includes(selectedShop)?selectedShop:"Reo Store";
   const shopItems=MENU.filter(x=>x.shop===shop&&x.available);
   const ranked=getMLRecommendations(shopItems).slice(0,6);
-  $("homeGrid").innerHTML=ranked.map(x=>foodCard(x)).join("");
+  $("homeGrid").innerHTML=ranked.map((x,i)=>foodCard(x,i<3?i+1:null)).join("");
   refreshCanteenWait();
 }
 let canteenWaitTimer=null;
